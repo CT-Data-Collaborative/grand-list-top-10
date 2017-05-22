@@ -3,8 +3,8 @@ import pytest
 ##################################################################
 #
 # Basic testing script for Grand List Top 10
-# Created by Sasha Cuerda
-# On 4/4/2017
+# Created by Jenna Daly
+# On 05/22/2017
 #
 ##################################################################
 

@@ -2,7 +2,7 @@
   "name": "grand-list-top-10",
   "datapackage_version": "1.0-beta.18",
   "title": "Grand List Top 10",
-  "description": "Grand List value of the ten highest valued properties by municipality.",
+  "description": "The Grand List value of the ten highest valued properties by municipality.",
   "version": "1.0",
   "licenses": [{
     "url": "http://opendatacommons.org/licenses/pddl/",
@@ -15,13 +15,13 @@
     "web": ""
   }],
   "author":[{
-    "name": "Sasha Cuerda",
-    "email": "scuerda@ctdata.org",
+    "name": "Jenna Daly",
+    "email": "jdaly@ctdata.org",
     "web": "http://ctdata.org"
   }],
   "contributor": [],
   "resources": [{
-    "path": "data/grandlisttop10.csv",
+    "path": "data/data.csv",
     "format": "csv",
     "schema": {
       "fields": [{
@@ -33,27 +33,17 @@
           "type": "string",
           "dimension": false
         }, {
-          "name": "Entry",
-          "type": "string",
-          "dimension": false
-        }, {
-          "name": "Rank",
-          "type": "number",
-          "dimension": false
-        }, {
           "name": "Year",
           "type": "string",
           "dimension": false
         }, {
           "name": "Measure Type",
           "type": "string",
-          "dimension": true,
-          "constraints": { "enum": [ "Number" ] }
+          "dimension": true
         }, {
           "name": "Variable",
           "type": "string",
-          "dimension": true,
-          "constraints": { "enum": [ "Grand List Value", "Percent of Total Grand List", "Percent of Top 10 Total Grand List"] }
+          "dimension": true
         }, {
           "name": "Value",
           "type": "number",
@@ -62,11 +52,11 @@
       }
     }
   ],
-  "last_modified": "4/4/2017",
+  "last_modified": "05/22/2017",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
-      "value": "<p>This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed with empty values. This data contains values for one given year for each municipality, and said year is reported along with each value. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.</p>",
+      "value": "This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed with empty values. This data contains values for one given year for each municipality, and said year is reported along with each value. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.",
       "type": "string"
     },
     "suppression": {
@@ -76,27 +66,27 @@
     },
     "technical_notes": {
       "ckan_name": "Technical Notes",
-      "value": "",
+      "value": "Technical notes for advanced users",
       "type": "string"
     },
     "socrata": {
       "ckan_name": "Socrata",
-      "value": "False",
+      "value": "False",,
       "type": "string"
     },
     "socrata_url": {
       "ckan_name": "Socrata Dataset URL",
-      "value": "",
+      "value": "",,
       "type": "string"
     },
     "domain": {
       "ckan_name": "Domain",
-      "value": "",
+      "value": "Data domain (top level)",
       "type": "string"
     },
     "subdomain": {
       "ckan_name": "Subdomain",
-      "value": "",
+      "value": "Topic within top level domain",
       "type": "string"
     },
     "geography": {
@@ -107,17 +97,17 @@
     },
     "frequency": {
       "ckan_name": "Frequency",
-      "value": "Other",
+      "value": "Annual",
       "type": "string"
     },
     "years_in_catalog": {
       "ckan_name": "Years in Catalog",
-      "value": ["2014"],
+      "value": [],
       "type": "array"
     },
     "latest_year": {
       "ckan_name": "Latest Year Available",
-      "value": "Latest year available",
+      "value": "2016",
       "type": "string"
     },
     "disabled_views": {
@@ -133,20 +123,7 @@
         "Percent": "%"
       }
     },
-    "hidden_in": {
-      "ckan_name": "Hidden In",
-      "value": ["visualizations", "community_profile"],
-      "type": "array"
-    },
-    "expected_number_of_geographies": {
-        "ckan_name": "Expected Number of Unique Geographies",
-        "value": 178,
-        "type": "string"
-    },
-      "default": {
-        "ckan_name": "Default",
-        "value": {}
-    }
+    "default": {}
   },
   "spot_checks": [],
   "dimension_groups": [

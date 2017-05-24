@@ -1,7 +1,11 @@
 Grand List Top 10
 
 [![Build Status](https://travis-ci.org/CT-Data-Collaborative/grand-list-top-10.svg?branch=master)](https://travis-ci.org/CT-Data-Collaborative/grand-list-top-10)
+
 The Grand List value of the ten highest valued properties by municipality.
+
+Data Source: Municipalities 
+Contributor: CT Economic Resource Center 
 
 ## License MIT
 

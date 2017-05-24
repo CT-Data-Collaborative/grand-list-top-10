@@ -21,7 +21,7 @@
   }],
   "contributor": [],
   "resources": [{
-    "path": "data/data.csv",
+    "path": "data/grand_list_top_10_2016.csv",
     "format": "csv",
     "schema": {
       "fields": [{
@@ -37,13 +37,38 @@
           "type": "string",
           "dimension": false
         }, {
+          "name": "Entry",
+          "type": "string",
+          "dimension": false
+        }, {       
+          "name": "Rank",
+          "type": "string",
+          "dimension": true, 
+          "constraints": {
+            "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+          }           
+        }, {         
           "name": "Measure Type",
           "type": "string",
-          "dimension": true
+          "dimension": true, 
+          "constraints": {
+            "enum": [
+              "Number", 
+              "Percent"
+            ]
+          }           
         }, {
           "name": "Variable",
           "type": "string",
-          "dimension": true
+          "dimension": true, 
+          "constraints": {
+            "enum": [
+              "Grand List Value",
+              "Percent of Total Grand List", 
+              "Percent of Net Grand List", 
+              "Percent of Top 10 Total Grand List" 
+            ]
+          }           
         }, {
           "name": "Value",
           "type": "number",
@@ -52,7 +77,7 @@
       }
     }
   ],
-  "last_modified": "05/22/2017",
+  "last_modified": "05/24/2017",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
@@ -66,27 +91,27 @@
     },
     "technical_notes": {
       "ckan_name": "Technical Notes",
-      "value": "Technical notes for advanced users",
+      "value": "",
       "type": "string"
     },
     "socrata": {
       "ckan_name": "Socrata",
-      "value": "False",,
+      "value": "False",
       "type": "string"
     },
     "socrata_url": {
       "ckan_name": "Socrata Dataset URL",
-      "value": "",,
+      "value": "",
       "type": "string"
     },
     "domain": {
       "ckan_name": "Domain",
-      "value": "Data domain (top level)",
+      "value": "",
       "type": "string"
     },
     "subdomain": {
       "ckan_name": "Subdomain",
-      "value": "Topic within top level domain",
+      "value": "",
       "type": "string"
     },
     "geography": {
@@ -102,7 +127,7 @@
     },
     "years_in_catalog": {
       "ckan_name": "Years in Catalog",
-      "value": [],
+      "value": ["2016"],
       "type": "array"
     },
     "latest_year": {
@@ -123,11 +148,151 @@
         "Percent": "%"
       }
     },
+    "expected_number_of_geographies": {
+      "ckan_name": "Expected Number of Unique Geographies",
+      "value": 169,
+      "type": "string"
+    },   
     "default": {}
-  },
-  "spot_checks": [],
+  },   
+  "spot_checks": [
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Danbury",
+        "Year": "2009",
+        "Rank": "1",
+        "Variable": "Grand List Value",
+        "Entry": "Danbury Mall Associates",
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": -6666
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Watertown",
+        "Year": "2011",
+        "Rank": "3",
+        "Variable": "Percent of Net Grand List",
+        "Entry": "Anstro Manufacturing",
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": -6666
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Haddam",
+        "Year": "2012",
+        "Rank": "5",
+        "Variable": "Grand List Value",
+        "Entry": "Rogers Realty LLC",
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": -6666
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Columbia",
+        "Year": "2014",
+        "Rank": "7",
+        "Variable": "Percent of Top 10 Total Grand List",
+        "Entry": "Kasica Gene",	
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": 0.78
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Ridgefield",
+        "Year": "2014",
+        "Rank": "9",
+        "Variable": "Grand List Value",
+        "Entry": "Fureka V.",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 9366880
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Salem",
+        "Year": "2015",
+        "Rank": "2",
+        "Variable": "Percent of Net Grand List",
+        "Entry": "Cadwell Deborah", 	
+
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": 0.71
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Easton",
+        "Year": "2016",
+        "Rank": "10",
+        "Variable": "Percent of Total Grand List",
+        "Entry": "Gilberties Land Company LLC", 	
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": 0.12
+      }
+    },    
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Sterling",
+        "Year": "2014",
+        "Rank": "4",
+        "Variable": "Grand List Value",
+        "Entry": "Sterling Materials",	
+
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 1099140
+      }
+    }
+  ],
   "dimension_groups": [
-    {"Measure Type": []},
-    {"Variable": []}
+    {"Rank": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+     "Variable": ["Grand List Value",
+                  "Percent of Total Grand List", 
+                  "Percent of Net Grand List", 
+                  "Percent of Top 10 Total Grand List" ]
+    }
   ]
 }

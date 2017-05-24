@@ -145,6 +145,7 @@ write.table(
   gl_data_total_long_fips,
   file.path(getwd(), "data", "grand_list_top_10_2016.csv"),
   sep = ",",
+  na = "-6666",
   row.names = F
 )
 

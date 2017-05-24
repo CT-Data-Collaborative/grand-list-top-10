@@ -5,6 +5,7 @@ Grand List Top 10
 The Grand List value of the ten highest valued properties by municipality.
 
 Data Source: Municipalities 
+
 Contributor: CT Economic Resource Center 
 
 ## License MIT

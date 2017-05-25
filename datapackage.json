@@ -21,7 +21,7 @@
   }],
   "contributor": [],
   "resources": [{
-    "path": "data/grand_list_top_10_2016.csv",
+    "path": "data/grand_list_top_10_2014.csv",
     "format": "csv",
     "schema": {
       "fields": [{
@@ -33,10 +33,18 @@
           "type": "string",
           "dimension": false
         }, {
-          "name": "Year",
+          "name": "Grand List Year",
           "type": "string",
           "dimension": false
         }, {
+          "name": "Year Submitted",
+          "type": "string",
+          "dimension": false
+        }, {
+          "name": "Town Profile Year",
+          "type": "string",
+          "dimension": false
+        }, {          
           "name": "Entry",
           "type": "string",
           "dimension": false
@@ -77,7 +85,7 @@
       }
     }
   ],
-  "last_modified": "05/24/2017",
+  "last_modified": "05/25/2017",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
@@ -127,12 +135,12 @@
     },
     "years_in_catalog": {
       "ckan_name": "Years in Catalog",
-      "value": ["2016"],
+      "value": ["2014"],
       "type": "array"
     },
     "latest_year": {
       "ckan_name": "Latest Year Available",
-      "value": "2016",
+      "value": "2014",
       "type": "string"
     },
     "disabled_views": {
@@ -160,7 +168,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Danbury",
-        "Year": "2009",
+        "Grand List Year": "2009",
         "Rank": "1",
         "Variable": "Grand List Value",
         "Entry": "Danbury Mall Associates",
@@ -176,7 +184,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Watertown",
-        "Year": "2011",
+        "Grand List Year": "2011",
         "Rank": "3",
         "Variable": "Percent of Net Grand List",
         "Entry": "Anstro Manufacturing",
@@ -192,7 +200,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Haddam",
-        "Year": "2012",
+        "Grand List Year": "2012",
         "Rank": "5",
         "Variable": "Grand List Value",
         "Entry": "Rogers Realty LLC",
@@ -208,7 +216,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Columbia",
-        "Year": "2014",
+        "Grand List Year": "2014",
         "Rank": "7",
         "Variable": "Percent of Top 10 Total Grand List",
         "Entry": "Kasica Gene",	
@@ -224,7 +232,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Ridgefield",
-        "Year": "2014",
+        "Grand List Year": "2014",
         "Rank": "9",
         "Variable": "Grand List Value",
         "Entry": "Fureka V.",	
@@ -239,45 +247,11 @@
     {
       "type": "$lookup",
       "filter": {
-        "Town": "Salem",
-        "Year": "2015",
-        "Rank": "2",
-        "Variable": "Percent of Net Grand List",
-        "Entry": "Cadwell Deborah", 	
-
-        "Measure Type": "Percent"
-      },
-      "expected": {
-        "type": "$match",
-        "number type": "float",
-        "value": 0.71
-      }
-    },
-    {
-      "type": "$lookup",
-      "filter": {
-        "Town": "Easton",
-        "Year": "2016",
-        "Rank": "10",
-        "Variable": "Percent of Total Grand List",
-        "Entry": "Gilberties Land Company LLC", 	
-        "Measure Type": "Percent"
-      },
-      "expected": {
-        "type": "$match",
-        "number type": "float",
-        "value": 0.12
-      }
-    },    
-    {
-      "type": "$lookup",
-      "filter": {
         "Town": "Sterling",
-        "Year": "2014",
+        "Grand List Year": "2014",
         "Rank": "4",
         "Variable": "Grand List Value",
         "Entry": "Sterling Materials",	
-
         "Measure Type": "Number"
       },
       "expected": {

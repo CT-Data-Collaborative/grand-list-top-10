@@ -33,7 +33,7 @@
           "type": "string",
           "dimension": false
         }, {
-          "name": "Grand List Year",
+          "name": "Year",
           "type": "string",
           "dimension": false
         }, {
@@ -85,11 +85,11 @@
       }
     }
   ],
-  "last_modified": "05/25/2017",
+  "last_modified": "05/26/2017",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
-      "value": "This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed with empty values. This data contains values for one given year for each municipality, and said year is reported along with each value. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.",
+      "value": "This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed as missing values. 'Year Submitted' represents when the grand list data was collected for a given year. 'Town Profile Year' represents for which year these data were used in the Town Profiles project. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.",
       "type": "string"
     },
     "suppression": {
@@ -168,7 +168,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Danbury",
-        "Grand List Year": "2009",
+        "Year": "2009",
         "Rank": "1",
         "Variable": "Grand List Value",
         "Entry": "Danbury Mall Associates",
@@ -184,7 +184,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Watertown",
-        "Grand List Year": "2011",
+        "Year": "2011",
         "Rank": "3",
         "Variable": "Percent of Net Grand List",
         "Entry": "Anstro Manufacturing",
@@ -200,7 +200,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Haddam",
-        "Grand List Year": "2012",
+        "Year": "2012",
         "Rank": "5",
         "Variable": "Grand List Value",
         "Entry": "Rogers Realty LLC",
@@ -216,7 +216,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Columbia",
-        "Grand List Year": "2014",
+        "Year": "2014",
         "Rank": "7",
         "Variable": "Percent of Top 10 Total Grand List",
         "Entry": "Kasica Gene",	
@@ -232,7 +232,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Ridgefield",
-        "Grand List Year": "2014",
+        "Year": "2014",
         "Rank": "9",
         "Variable": "Grand List Value",
         "Entry": "Fureka V.",	
@@ -248,7 +248,7 @@
       "type": "$lookup",
       "filter": {
         "Town": "Sterling",
-        "Grand List Year": "2014",
+        "Year": "2014",
         "Rank": "4",
         "Variable": "Grand List Value",
         "Entry": "Sterling Materials",	

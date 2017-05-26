@@ -40,7 +40,7 @@ gl_2014_long <- data.frame(stringsAsFactors = F)
 for(i in 1:10) {
   cols = c(1, 2, 27, ((2 * i) + 1), (2 * (i + 1)))
   ranked <- gl_2014[, cols]
-  names(ranked) <- c("Town", "Grand List Year", "Year Submitted", "Entry", "Grand List Value")
+  names(ranked) <- c("Town", "Year", "Year Submitted", "Entry", "Grand List Value")
   ranked$Rank <- i
   gl_2014_long <- rbind(gl_2014_long, ranked)
   remove(ranked, cols)
@@ -48,9 +48,9 @@ for(i in 1:10) {
 
 #Bring back in denominators for calculated variables
 gl_denom_2014 <- gl_2014[,c(1,2,23,25,26)]
-colnames(gl_denom_2014) <- c("Town", "Grand List Year", "Top 10 Total", "Total", "Net Total")
+colnames(gl_denom_2014) <- c("Town", "Year", "Top 10 Total", "Total", "Net Total")
 
-gl_2014_total <- merge(gl_2014_long, gl_denom_2014, by = c("Town", "Grand List Year"))
+gl_2014_total <- merge(gl_2014_long, gl_denom_2014, by = c("Town", "Year"))
 
 gl_2014_total$`Percent of Total Grand List` <- round((gl_2014_total$`Grand List Value` / gl_2014_total$`Total`) * 100, 2)
 gl_2014_total$`Percent of Net Grand List` <-  round((gl_2014_total$`Grand List Value` /  gl_2014_total$`Net Total`) * 100, 2)
@@ -102,9 +102,9 @@ gl_2014_total_long_fips$"Measure Type"[which(gl_2014_total_long_fips$Variable %i
                                                                                      "Percent of Top 10 Total Grand List"))] <- "Percent"
 
 #Check to make sure years make sense (should return FALSE)
-gl_2014_total_long_fips$`Grand List Year` <- as.numeric(gl_2014_total_long_fips$`Grand List Year`)
-min_year <- min(gl_2014_total_long_fips$`Grand List Year`, na.rm=T)
-any(gl_2014_total_long_fips$`Grand List Year` < min_year, na.rm=T)
+gl_2014_total_long_fips$`Year` <- as.numeric(gl_2014_total_long_fips$`Year`)
+min_year <- min(gl_2014_total_long_fips$`Year`, na.rm=T)
+any(gl_2014_total_long_fips$`Year` < min_year, na.rm=T)
 any(gl_2014_total_long_fips$`Year Submitted` < min_year, na.rm=T)
 
 #Fix any towns with incorrect years
@@ -115,26 +115,26 @@ gl_2014_total_long_fips$"Town Profile Year" <- 2016
 
 #Order columns
 gl_2014_total_long_fips <- gl_2014_total_long_fips %>% 
-  select(`Town`, `FIPS`, `Grand List Year`, `Year Submitted`, `Town Profile Year`, `Entry`, `Rank`, `Variable`, `Measure Type`, `Value`) %>% 
+  select(`Town`, `FIPS`, `Year`, `Year Submitted`, `Town Profile Year`, `Entry`, `Rank`, `Variable`, `Measure Type`, `Value`) %>% 
   arrange(Town, Variable, Rank)
 
 #Set towns with no year to cutoff year (blank data)
 latest_year <- max(gl_2014_total_long_fips$`Town Profile Year`, na.rm=T)
 cutoff_year <- latest_year - 3
 
-NA_towns_gl <- unique(gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Grand List Year`),]$Town)
+NA_towns_gl <- unique(gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Year`),]$Town)
 
-gl_2014_total_long_fips$"Grand List Year"[which(gl_2014_total_long_fips$Town %in% NA_towns_gl)] <- cutoff_year
+gl_2014_total_long_fips$"Year"[which(gl_2014_total_long_fips$Town %in% NA_towns_gl)] <- cutoff_year
 gl_2014_total_long_fips$"Year Submitted"[which(gl_2014_total_long_fips$Town %in% NA_towns_gl)] <- cutoff_year
 
 #Now find any towns where year submitted is blank
 NA_towns_submit <- unique(gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Year Submitted`),]$Town)
 #set year submitted equal to GL year
 gl_2014_total_long_fips <- gl_2014_total_long_fips %>% 
-  mutate(`Year Submitted` = ifelse(Town %in% NA_towns_submit, `Grand List Year`, `Year Submitted`))
+  mutate(`Year Submitted` = ifelse(Town %in% NA_towns_submit, `Year`, `Year Submitted`))
 
 #Code "Old" data to -6666 (data before cutoff year)
-gl_2014_total_long_fips$Value[gl_2014_total_long_fips$`Grand List Year` < cutoff_year] <- -6666
+gl_2014_total_long_fips$Value[gl_2014_total_long_fips$`Year` < cutoff_year] <- -6666
 
 # Write to File
 write.table(

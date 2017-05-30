@@ -113,28 +113,31 @@ gl_2014_total_long_fips$"Year Submitted"[which(gl_2014_total_long_fips$Town %in%
 #Set profiles year
 gl_2014_total_long_fips$"Town Profile Year" <- 2016
 
+#Set towns with blank years
+#Two scenarios:
+#1) GL year present, submitted year blank - set submitted year to GL year (Naugatuck, Voluntown)
+blank2 <- gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Year Submitted`),]
+blank2 <- unique(blank2[!is.na(blank2$`Year`),]$Town)
+
+#2) GL year blank, submitted year blank - set both years to cutoff year (Morris, New Canaan)
+blank3 <- gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Year Submitted`),]
+blank3 <- unique(blank3[is.na(blank3$`Year`),]$Town)
+
+#Set years accordingly
+latest_year <- max(gl_2014_total_long_fips$`Town Profile Year`, na.rm=T)
+cutoff_year <- latest_year - 3
+gl_2014_total_long_fips <- gl_2014_total_long_fips %>%
+  mutate(`Year Submitted` = ifelse(Town %in% blank2, `Year`, `Year Submitted`),
+         `Year` = ifelse(Town %in% blank3, cutoff_year, `Year`),
+         `Year Submitted` = ifelse(Town %in% blank3, cutoff_year, `Year Submitted`))
+
 #Order columns
 gl_2014_total_long_fips <- gl_2014_total_long_fips %>% 
   select(`Town`, `FIPS`, `Year`, `Year Submitted`, `Town Profile Year`, `Entry`, `Rank`, `Variable`, `Measure Type`, `Value`) %>% 
   arrange(Town, Variable, Rank)
 
-#Set towns with no year to cutoff year (blank data)
-latest_year <- max(gl_2014_total_long_fips$`Town Profile Year`, na.rm=T)
-cutoff_year <- latest_year - 3
-
-NA_towns_gl <- unique(gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Year`),]$Town)
-
-gl_2014_total_long_fips$"Year"[which(gl_2014_total_long_fips$Town %in% NA_towns_gl)] <- cutoff_year
-gl_2014_total_long_fips$"Year Submitted"[which(gl_2014_total_long_fips$Town %in% NA_towns_gl)] <- cutoff_year
-
-#Now find any towns where year submitted is blank
-NA_towns_submit <- unique(gl_2014_total_long_fips[is.na(gl_2014_total_long_fips$`Year Submitted`),]$Town)
-#set year submitted equal to GL year
-gl_2014_total_long_fips <- gl_2014_total_long_fips %>% 
-  mutate(`Year Submitted` = ifelse(Town %in% NA_towns_submit, `Year`, `Year Submitted`))
-
 #Code "Old" data to -6666 (data before cutoff year)
-gl_2014_total_long_fips$Value[gl_2014_total_long_fips$`Year` < cutoff_year] <- -6666
+#gl_2014_total_long_fips$Value[gl_2014_total_long_fips$`Year` < cutoff_year] <- -6666
 
 # Write to File
 write.table(

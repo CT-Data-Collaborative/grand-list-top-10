@@ -177,7 +177,7 @@
       "expected": {
         "type": "$match",
         "number type": "int",
-        "value": -6666
+        "value": 226689880
       }
     },
     {
@@ -193,7 +193,7 @@
       "expected": {
         "type": "$match",
         "number type": "float",
-        "value": -6666
+        "value": 0.44
       }
     },
     {
@@ -209,7 +209,7 @@
       "expected": {
         "type": "$match",
         "number type": "int",
-        "value": -6666
+        "value": 1845120
       }
     },
     {

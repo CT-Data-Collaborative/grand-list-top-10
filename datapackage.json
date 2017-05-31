@@ -2,7 +2,7 @@
   "name": "grand-list-top-10",
   "datapackage_version": "1.0-beta.18",
   "title": "Grand List Top 10",
-  "description": "Grand List value of the ten highest valued properties by municipality.",
+  "description": "The Grand List value of the ten highest valued properties by municipality.",
   "version": "1.0",
   "licenses": [{
     "url": "http://opendatacommons.org/licenses/pddl/",
@@ -15,13 +15,13 @@
     "web": ""
   }],
   "author":[{
-    "name": "Sasha Cuerda",
-    "email": "scuerda@ctdata.org",
+    "name": "Jenna Daly",
+    "email": "jdaly@ctdata.org",
     "web": "http://ctdata.org"
   }],
   "contributor": [],
   "resources": [{
-    "path": "data/grandlisttop10.csv",
+    "path": "data/grand_list_top_10_2014.csv",
     "format": "csv",
     "schema": {
       "fields": [{
@@ -33,27 +33,50 @@
           "type": "string",
           "dimension": false
         }, {
-          "name": "Entry",
-          "type": "string",
-          "dimension": false
-        }, {
-          "name": "Rank",
-          "type": "number",
-          "dimension": false
-        }, {
           "name": "Year",
           "type": "string",
           "dimension": false
         }, {
+          "name": "Year Submitted",
+          "type": "string",
+          "dimension": false
+        }, {
+          "name": "Town Profile Year",
+          "type": "string",
+          "dimension": false
+        }, {          
+          "name": "Entry",
+          "type": "string",
+          "dimension": false
+        }, {       
+          "name": "Rank",
+          "type": "string",
+          "dimension": true, 
+          "constraints": {
+            "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+          }           
+        }, {         
           "name": "Measure Type",
           "type": "string",
-          "dimension": true,
-          "constraints": { "enum": [ "Number" ] }
+          "dimension": true, 
+          "constraints": {
+            "enum": [
+              "Number", 
+              "Percent"
+            ]
+          }           
         }, {
           "name": "Variable",
           "type": "string",
-          "dimension": true,
-          "constraints": { "enum": [ "Grand List Value", "Percent of Total Grand List", "Percent of Top 10 Total Grand List"] }
+          "dimension": true, 
+          "constraints": {
+            "enum": [
+              "Grand List Value",
+              "Percent of Total Grand List", 
+              "Percent of Net Grand List", 
+              "Percent of Top 10 Total Grand List" 
+            ]
+          }           
         }, {
           "name": "Value",
           "type": "number",
@@ -62,11 +85,11 @@
       }
     }
   ],
-  "last_modified": "4/4/2017",
+  "last_modified": "05/26/2017",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
-      "value": "<p>This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed with empty values. This data contains values for one given year for each municipality, and said year is reported along with each value. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.</p>",
+      "value": "This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed as missing values. 'Year Submitted' represents when the grand list data was collected for a given year. 'Town Profile Year' represents for which year these data were used in the Town Profiles project. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.",
       "type": "string"
     },
     "suppression": {
@@ -107,7 +130,7 @@
     },
     "frequency": {
       "ckan_name": "Frequency",
-      "value": "Other",
+      "value": "Annual",
       "type": "string"
     },
     "years_in_catalog": {
@@ -117,7 +140,7 @@
     },
     "latest_year": {
       "ckan_name": "Latest Year Available",
-      "value": "Latest year available",
+      "value": "2014",
       "type": "string"
     },
     "disabled_views": {
@@ -133,24 +156,125 @@
         "Percent": "%"
       }
     },
-    "hidden_in": {
-      "ckan_name": "Hidden In",
-      "value": ["visualizations", "community_profile"],
-      "type": "array"
-    },
     "expected_number_of_geographies": {
-        "ckan_name": "Expected Number of Unique Geographies",
-        "value": 178,
-        "type": "string"
-    },
-      "default": {
-        "ckan_name": "Default",
-        "value": {}
+      "ckan_name": "Expected Number of Unique Geographies",
+      "value": 169,
+      "type": "string"
+    },   
+    "default": {    
+      "ckan_name": "Default",
+      "value": {
+        "Measure Type": "Number",
+        "Year": ["2014"],
+        "Variable": ["Grand List Value"]
+      },
+      "type": "object"
     }
-  },
-  "spot_checks": [],
+  }, 
+  "spot_checks": [
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Danbury",
+        "Year": "2009",
+        "Rank": "1",
+        "Variable": "Grand List Value",
+        "Entry": "Danbury Mall Associates",
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 226689880
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Watertown",
+        "Year": "2011",
+        "Rank": "3",
+        "Variable": "Percent of Net Grand List",
+        "Entry": "Anstro Manufacturing",
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": 0.44
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Haddam",
+        "Year": "2012",
+        "Rank": "5",
+        "Variable": "Grand List Value",
+        "Entry": "Rogers Realty LLC",
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 1845120
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Columbia",
+        "Year": "2014",
+        "Rank": "7",
+        "Variable": "Percent of Top 10 Total Grand List",
+        "Entry": "Kasica Gene",	
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": 0.78
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Ridgefield",
+        "Year": "2014",
+        "Rank": "9",
+        "Variable": "Grand List Value",
+        "Entry": "Fureka V.",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 9366880
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Sterling",
+        "Year": "2014",
+        "Rank": "4",
+        "Variable": "Grand List Value",
+        "Entry": "Sterling Materials",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 1099140
+      }
+    }
+  ],
   "dimension_groups": [
-    {"Measure Type": []},
-    {"Variable": []}
+    {"Rank": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+     "Variable": ["Grand List Value",
+                  "Percent of Total Grand List", 
+                  "Percent of Net Grand List", 
+                  "Percent of Top 10 Total Grand List" ]
+    }
   ]
 }

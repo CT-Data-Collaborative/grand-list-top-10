@@ -21,7 +21,7 @@
   }],
   "contributor": [],
   "resources": [{
-    "path": "data/grand_list_top_10_2014.csv",
+    "path": "data/grand_list_top_10_2014_2016.csv",
     "format": "csv",
     "schema": {
       "fields": [{
@@ -85,7 +85,7 @@
       }
     }
   ],
-  "last_modified": "05/26/2017",
+  "last_modified": "06/01/2017",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
@@ -135,12 +135,12 @@
     },
     "years_in_catalog": {
       "ckan_name": "Years in Catalog",
-      "value": ["2014"],
+      "value": ["2014", "2016"],
       "type": "array"
     },
     "latest_year": {
       "ckan_name": "Latest Year Available",
-      "value": "2014",
+      "value": "2016",
       "type": "string"
     },
     "disabled_views": {
@@ -165,13 +165,109 @@
       "ckan_name": "Default",
       "value": {
         "Measure Type": "Number",
-        "Year": ["2014"],
+        "Year": ["2016"],
         "Variable": ["Grand List Value"]
       },
       "type": "object"
     }
   }, 
   "spot_checks": [
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Morris",
+        "Year": "2015",
+        "Rank": "1",
+        "Variable": "Grand List Value",
+        "Entry": "White Memorial Foundation",
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 13814720
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "New Canaan",
+        "Year": "2013",
+        "Rank": "3",
+        "Variable": "Percent of Net Grand List",
+        "Entry": "-666666",
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": -666666
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Voluntown",
+        "Year": "2016",
+        "Rank": "5",
+        "Variable": "Grand List Value",
+        "Entry": "Gallup, Byron",
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 678730
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Naugatuck",
+        "Year": "2016",
+        "Rank": "7",
+        "Variable": "Percent of Top 10 Total Grand List",
+        "Entry": "Bridge Shopping Center",	
+        "Measure Type": "Percent"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "float",
+        "value": 6.4
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "North Stonington",
+        "Year": "2016",
+        "Rank": "9",
+        "Variable": "Grand List Value",
+        "Entry": "Hilltop Inn Suites LLC",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": -666666
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Seymour",
+        "Year": "2016",
+        "Rank": "4",
+        "Variable": "Grand List Value",
+        "Entry": "Aquarion Water Co",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 6211830
+      }
+    },    
     {
       "type": "$lookup",
       "filter": {

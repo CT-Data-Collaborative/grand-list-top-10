@@ -240,16 +240,16 @@
       "type": "$lookup",
       "filter": {
         "Town": "North Stonington",
-        "Year": "2016",
+        "Year": "2009",
         "Rank": "9",
         "Variable": "Grand List Value",
-        "Entry": "Hilltop Inn Suites LLC",	
+        "Entry": "Esplanade Hill Top",	
         "Measure Type": "Number"
       },
       "expected": {
         "type": "$match",
         "number type": "int",
-        "value": -666666
+        "value": 2800000
       }
     },
     {

@@ -134,6 +134,22 @@ complete_gl_long_fips <- complete_gl_long_fips %>%
          `Year` = ifelse((Town %in% blank3) & (is.na(`Year`)) & (is.na(`Year Submitted`)), (`Town Profile Year` - 3), `Year`), #fills it in only if both years are blank
          `Year Submitted` = ifelse((Town %in% blank3) & (is.na(`Year Submitted`)), (`Town Profile Year` - 3), `Year Submitted`))  #now that year is filled in, only need to check on year submitted is blank
   
+#Populate missing 2017 values with 2016 values
+fix_2017 <- complete_gl_long_fips[is.na(complete_gl_long_fips$Value) & 
+                                    complete_gl_long_fips$Rank == 1 & 
+                                    complete_gl_long_fips$Variable == "Grand List Value" & 
+                                    complete_gl_long_fips$`Town Profile Year` == 2017,]
+
+towns_2017 <- unique(fix_2017$Town)
+bring_from_2016_again <- complete_gl_long_fips[!is.na(complete_gl_long_fips$Value) & 
+                                                 complete_gl_long_fips$Town %in% towns_2017 & 
+                                                 complete_gl_long_fips$`Town Profile Year` == 2016,]
+
+bring_from_2016_again$`Town Profile Year` <- 2017
+fix_towns_2017 <- unique(bring_from_2016_again$Town)
+complete_gl_long_fips <- complete_gl_long_fips[!(complete_gl_long_fips$Town %in% fix_towns_2017 & complete_gl_long_fips$`Town Profile Year` == 2017),]
+complete_gl_long_fips <- rbind(bring_from_2016_again, complete_gl_long_fips)
+
 #Order columns
 complete_gl_long_fips <- complete_gl_long_fips %>% 
   select(`Town`, `FIPS`, `Year`, `Year Submitted`, `Town Profile Year`, `Entry`, `Rank`, `Variable`, `Measure Type`, `Value`) %>% 

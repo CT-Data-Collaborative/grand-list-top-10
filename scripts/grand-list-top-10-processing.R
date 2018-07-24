@@ -263,8 +263,7 @@ final_gl <- rbind(gl_final_long_fips, bf_from_2016, complete_gl_long_fips)
 
 final_gl <- final_gl %>% 
   select(Town, FIPS, Year, `Year Submitted`, `Town Profile Year`, Entry, Rank, Variable, `Measure Type`, Value) %>% 
-  arrange(Town, Variable, `Town Profile Year`, Rank) #%>% 
-  #filter(!is.na(Entry))
+  arrange(Town, Variable, `Town Profile Year`, Rank) 
 
 # Write to File
 write.table(

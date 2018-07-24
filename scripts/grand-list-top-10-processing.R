@@ -259,22 +259,20 @@ complete_gl_long_fips <- complete_gl_long_fips %>%
 
 #################################################################################################################################
 #Backfill 2017 gl values with data from 2016 gl
-bf_from_2016 <- complete_gl_long_fips[complete_gl_long_fips$Town %in% backfill_towns2 & complete_gl_long_fips$`Town Profile Year` == "2017",]
-bf_from_2016$`Town Profile Year` <- "2018"
+bf_from_2016 <- complete_gl_long_fips[complete_gl_long_fips$Town %in% backfill_towns2 & complete_gl_long_fips$`Town Profile Year` == 2017,]
+bf_from_2016$`Town Profile Year` <- 2018
 
 final_gl <- rbind(gl_final_long_fips, bf_from_2016, complete_gl_long_fips)
 
-final_gl$`Year` <- as.integer(final_gl$`Year`)
-final_gl$`Year Submitted` <- as.integer(final_gl$`Year Submitted`)
-final_gl$`Town Profile Year`<- as.integer(final_gl$`Town Profile Year`)
+final_gl$`Year` <- as.numeric(final_gl$`Year`)
+final_gl$`Year Submitted` <- as.numeric(final_gl$`Year Submitted`)
+final_gl$`Town Profile Year`<- as.numeric(final_gl$`Town Profile Year`)
 
 final_gl$Town <- as.character(final_gl$Town)
 final_gl$Rank <- as.integer(final_gl$Rank)
-final_gl$FIPS <- as.integer(final_gl$FIPS)
 
 final_gl <- final_gl %>% 
-  select(Town, FIPS, Year, `Year Submitted`, `Town Profile Year`, Entry, Rank, Variable, `Measure Type`, Value) %>% 
-  arrange(Town, Variable, `Town Profile Year`, Rank) 
+  select(Town, FIPS, Year, `Year Submitted`, `Town Profile Year`, Entry, Rank, Variable, `Measure Type`, Value)
 
 # Write to File
 write.table(

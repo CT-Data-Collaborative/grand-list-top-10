@@ -261,6 +261,10 @@ bf_from_2016$`Town Profile Year` <- "2018"
 
 final_gl <- rbind(gl_final_long_fips, bf_from_2016, complete_gl_long_fips)
 
+final_gl$`Year` <- as.numeric(final_gl$`Year`)
+final_gl$`Year Submitted` <- as.numeric(final_gl$`Year Submitted`)
+final_gl$`Town Profile Year`<- as.numeric(final_gl$`Town Profile Year`)
+
 final_gl <- final_gl %>% 
   select(Town, FIPS, Year, `Year Submitted`, `Town Profile Year`, Entry, Rank, Variable, `Measure Type`, Value) %>% 
   arrange(Town, Variable, `Town Profile Year`, Rank) 

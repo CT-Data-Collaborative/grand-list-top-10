@@ -40,10 +40,13 @@ gl_2017 <- gl_2017df[gl_2017df$Town %in% x2017_towns,]
 gl_2017bus <- data.frame(gl_2017$Town, gl_2017$`Grand List Notes`, do.call('rbind', strsplit(as.character(gl_2017$`Top 10 Business Names`),';',fixed=TRUE)))
 colnames(gl_2017bus) <- c("Town", "Year", 1,2,3,4,5,6,7,8,9,10)
 gl_2017bus <- gather(gl_2017bus, Rank, Entry, 3:12, factor_key=FALSE)
+gl_2017bus$Entry <- trimws(gl_2017bus$Entry)
+
 #set up gl values list
 gl_2017val <- data.frame(gl_2017$Town, gl_2017$`Grand List Notes`, do.call('rbind', strsplit(as.character(gl_2017$`Top 10 Grand List Values`),';',fixed=TRUE)))
 colnames(gl_2017val) <- c("Town", "Year", 1,2,3,4,5,6,7,8,9,10)
 gl_2017val <- gather(gl_2017val, Rank, Entry, 3:12, factor_key=FALSE)
+gl_2017val$Entry <- trimws(gl_2017val$Entry)
 
 gl_2017 <- merge(gl_2017bus, gl_2017val, by = c("Town", "Rank", "Year"), all=T)
 
@@ -261,9 +264,13 @@ bf_from_2016$`Town Profile Year` <- "2018"
 
 final_gl <- rbind(gl_final_long_fips, bf_from_2016, complete_gl_long_fips)
 
-final_gl$`Year` <- as.numeric(final_gl$`Year`)
-final_gl$`Year Submitted` <- as.numeric(final_gl$`Year Submitted`)
-final_gl$`Town Profile Year`<- as.numeric(final_gl$`Town Profile Year`)
+final_gl$`Year` <- as.integer(final_gl$`Year`)
+final_gl$`Year Submitted` <- as.integer(final_gl$`Year Submitted`)
+final_gl$`Town Profile Year`<- as.integer(final_gl$`Town Profile Year`)
+
+final_gl$Town <- as.character(final_gl$Town)
+final_gl$Rank <- as.integer(final_gl$Rank)
+final_gl$FIPS <- as.integer(final_gl$FIPS)
 
 final_gl <- final_gl %>% 
   select(Town, FIPS, Year, `Year Submitted`, `Town Profile Year`, Entry, Rank, Variable, `Measure Type`, Value) %>% 

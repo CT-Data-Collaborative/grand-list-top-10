@@ -3,6 +3,8 @@ library(datapkg)
 library(readxl)
 library(stringi)
 library(lubridate)
+library(tidyr)
+library(stringr)
 
 ##################################################################
 #
@@ -16,16 +18,119 @@ library(lubridate)
 sub_folders <- list.files()
 data_location <- grep("raw", sub_folders, value=T)
 path_to_raw_data <- (paste0(getwd(), "/", data_location))
-gl_xlsx_2016 <- dir(path_to_raw_data, recursive=T, pattern = "Grand") 
+gl_xlsx <- dir(path_to_raw_data, recursive=T, pattern = "Grand") 
 
 #Isolate years used for profiles
-gl_2016 <- (read_excel(paste0(path_to_raw_data, "/", gl_xlsx_2016), sheet=1, skip=0)) 
-gl_2014 <- (read_excel(paste0(path_to_raw_data, "/", gl_xlsx_2016), sheet=2, skip=0)) 
+gl_2017df <- (read_excel(paste0(path_to_raw_data, "/", gl_xlsx), sheet=1, skip=0)) 
+gl_2016df <- (read_excel(paste0(path_to_raw_data, "/", gl_xlsx), sheet=2, skip=0)) 
+gl_2014df <- (read_excel(paste0(path_to_raw_data, "/", gl_xlsx), sheet=3, skip=0)) 
 
 tp_years <- c("2016", "2017")
-dfs <- ls()[sapply(mget(ls(), .GlobalEnv), is.data.frame)]
-gl_data <- grep("gl_", dfs, value=T)
+#dfs <- ls()[sapply(mget(ls(), .GlobalEnv), is.data.frame)]
+gl_data <- c("gl_2014df", "gl_2016df")
 
+#First process 2017, then use 2016 and 2014 to backfill if necessary
+x2017_towns <- unique(gl_2017df$`What's your Town name?`)[!is.na(unique(gl_2017df$`What's your Town name?`))]
+backfill_towns <- gl_2017df$Town[is.na(gl_2017df$`What's your Town name?`)]
+backfill_towns2 <- gl_2017df$Town[is.na(gl_2017df$`Top 10 Business Names`)]
+
+gl_2017 <- gl_2017df[gl_2017df$Town %in% x2017_towns,]
+
+#set up business names list
+gl_2017bus <- data.frame(gl_2017$Town, gl_2017$`Grand List Notes`, do.call('rbind', strsplit(as.character(gl_2017$`Top 10 Business Names`),';',fixed=TRUE)))
+colnames(gl_2017bus) <- c("Town", "Year", 1,2,3,4,5,6,7,8,9,10)
+gl_2017bus <- gather(gl_2017bus, Rank, Entry, 3:12, factor_key=FALSE)
+#set up gl values list
+gl_2017val <- data.frame(gl_2017$Town, gl_2017$`Grand List Notes`, do.call('rbind', strsplit(as.character(gl_2017$`Top 10 Grand List Values`),';',fixed=TRUE)))
+colnames(gl_2017val) <- c("Town", "Year", 1,2,3,4,5,6,7,8,9,10)
+gl_2017val <- gather(gl_2017val, Rank, Entry, 3:12, factor_key=FALSE)
+
+gl_2017 <- merge(gl_2017bus, gl_2017val, by = c("Town", "Rank", "Year"), all=T)
+
+#format years
+gl_2017$Year <- str_sub(gsub("[^0-9.]", "", gl_2017$Year), -4, -1)
+gl_2017$Year[!grepl("201", gl_2017$Year)] <- NA
+gl_2017$Year[is.na(gl_2017$Year)] <- "2017"
+gl_2017$`Year Submitted` <- "2018"
+gl_2017$`Town Profile Year` <- "2018"
+gl_2017$Rank <- factor(gl_2017$Rank, levels = c(1,2,3,4,5,6,7,8,9,10))
+
+#preliminary formatting
+gl_2017 <- gl_2017 %>% 
+  select(Town, Year, `Year Submitted`, `Town Profile Year`, Entry.x, Rank,  Entry.y) %>% 
+  rename(Entry = Entry.x, `Grand List Value` = Entry.y) %>% 
+  arrange(Town, Rank)
+
+#calculate % of totals
+gl_2017_totals <- gl_2017df
+gl_2017_totals <- gl_2017df[gl_2017df$Town %in% x2017_towns,]
+gl_2017_totals <- gl_2017_totals %>% 
+  select(Town, `Top 10 Total Grand List`, `Total Grand List`, `Net Grand List`)
+
+gl_2017_calc <- merge(gl_2017, gl_2017_totals, by = "Town", all=T)
+
+#reformat numeric columns for calculations
+#function to gsub multiple characters in string
+mgsub <- function(pattern, replacement, x, ...) {
+  if (length(pattern)!=length(replacement)) {
+    stop("pattern and replacement do not have the same length.")
+  }
+  result <- x
+  for (i in 1:length(pattern)) {
+    result <- gsub(pattern[i], replacement[i], result, ...)
+  }
+  result
+}
+
+#apply function
+gl_2017_calc$`Grand List Value` <- mgsub(c("\\$"," ",","), c("","",""), gl_2017_calc$`Grand List Value`)
+gl_2017_calc$`Top 10 Total Grand List` <- mgsub(c("\\$"," ",","), c("","",""), gl_2017_calc$`Top 10 Total Grand List`)
+gl_2017_calc$`Total Grand List` <- mgsub(c("\\$"," ",","), c("","",""), gl_2017_calc$`Total Grand List`)
+gl_2017_calc$`Net Grand List` <- mgsub(c("\\$"," ",","), c("","",""), gl_2017_calc$`Net Grand List`)
+
+#convert to numeric
+cols <- c("Top 10 Total Grand List", "Total Grand List", "Net Grand List", "Grand List Value")
+gl_2017_calc[cols] <- sapply(gl_2017_calc[cols],as.numeric)
+
+#calculate percents
+gl_2017_calc$`Percent of Net Grand List` <- round((gl_2017_calc$`Grand List Value` / gl_2017_calc$`Net Grand List`)*100,2)
+gl_2017_calc$`Percent of Top 10 Total Grand List` <- round((gl_2017_calc$`Grand List Value` / as.numeric(gl_2017_calc$`Top 10 Total Grand List`))*100,2)
+gl_2017_calc$`Percent of Total Grand List` <- round((gl_2017_calc$`Grand List Value` / as.numeric(gl_2017_calc$`Total Grand List`))*100,2)
+
+#remove totals
+gl_2017_calc <- gl_2017_calc %>% select(-c(8:10))
+
+#correct case in gl entries
+gl_2017_calc$Entry <- gsub("Llc", "LLC", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("Iii", "III", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("Ii", "II", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("Ct ", "CT ", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub(" Ct", " CT", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub(" Lp", " LP", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("Llp", " LLP", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("At& ", "AT&", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("Et Al", "et al", gl_2017_calc$Entry)
+gl_2017_calc$Entry <- gsub("ET AL", "et al", gl_2017_calc$Entry)
+
+#reformat variables
+gl_final_long <- gather(gl_2017_calc, Variable, Value, 7:10, factor_key=F)
+
+#set MT
+gl_final_long$`Measure Type` <- "Percent"
+gl_final_long$`Measure Type`[gl_final_long$Variable == "Grand List Value"] <- "Number"
+
+#Merge in FIPS
+town_fips_dp_URL <- 'https://raw.githubusercontent.com/CT-Data-Collaborative/ct-town-list/master/datapackage.json'
+town_fips_dp <- datapkg_read(path = town_fips_dp_URL)
+fips <- (town_fips_dp$data[[1]])
+
+gl_final_long_fips <- merge(gl_final_long, fips, by = "Town", all.x=T)
+
+gl_final_long_fips <- gl_final_long_fips %>% 
+  filter(!is.na(Entry))
+
+#################################################################################################################################
+#Get data from previous years to backfill 2017 gl
 #omit rows where is.na(Town)
 #omit first 2 columns, last column
 #Extract year from 'submitted' column
@@ -99,14 +204,8 @@ complete_gl_long_fips <- merge(complete_gl_long, fips, by = "Town", all=T)
 complete_gl_long_fips <- complete_gl_long_fips[complete_gl_long_fips$Town != "Connecticut",]
 
 #Assign Measure Type
-complete_gl_long_fips$"Measure Type" <- NA
-##fill in 'Measure Type' column based on criteria listed below
-
+complete_gl_long_fips$"Measure Type" <- "Percent"
 complete_gl_long_fips$"Measure Type"[which(complete_gl_long_fips$Variable %in% c("Grand List Value"))] <- "Number"
-
-complete_gl_long_fips$"Measure Type"[which(complete_gl_long_fips$Variable %in% c("Percent of Total Grand List", 
-                                                                                 "Percent of Net Grand List", 
-                                                                                 "Percent of Top 10 Total Grand List"))] <- "Percent"
 
 #Check to make sure years make sense (should return FALSE)
 complete_gl_long_fips$`Year` <- as.numeric(complete_gl_long_fips$`Year`)
@@ -155,12 +254,23 @@ complete_gl_long_fips <- complete_gl_long_fips %>%
   select(`Town`, `FIPS`, `Year`, `Year Submitted`, `Town Profile Year`, `Entry`, `Rank`, `Variable`, `Measure Type`, `Value`) %>% 
   arrange(Town, Variable, `Town Profile Year`, Rank)
 
+#################################################################################################################################
+#Backfill 2017 gl values with data from 2016 gl
+bf_from_2016 <- complete_gl_long_fips[complete_gl_long_fips$Town %in% backfill_towns2 & complete_gl_long_fips$`Town Profile Year` == "2017",]
+bf_from_2016$`Town Profile Year` <- "2018"
+
+final_gl <- rbind(gl_final_long_fips, bf_from_2016, complete_gl_long_fips)
+
+final_gl <- final_gl %>% 
+  select(Town, FIPS, Year, `Year Submitted`, `Town Profile Year`, Entry, Rank, Variable, `Measure Type`, Value) %>% 
+  arrange(Town, Variable, `Town Profile Year`, Rank) #%>% 
+  #filter(!is.na(Entry))
+
 # Write to File
 write.table(
-  complete_gl_long_fips,
-  file.path(getwd(), "data", "grand_list_top_10_2014_2016.csv"),
+  final_gl,
+  file.path(getwd(), "data", "grand_list_top_10_2014_2017.csv"),
   sep = ",",
   na = "-666666",
   row.names = F
 )
-

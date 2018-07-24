@@ -21,7 +21,7 @@
   }],
   "contributor": [],
   "resources": [{
-    "path": "data/grand_list_top_10_2014_2016.csv",
+    "path": "data/grand_list_top_10_2014_2017.csv",
     "format": "csv",
     "schema": {
       "fields": [{
@@ -85,11 +85,11 @@
       }
     }
   ],
-  "last_modified": "06/01/2017",
+  "last_modified": "07/24/2018",
   "ckan_extras": {
     "full_description": {
       "ckan_name": "Full Description",
-      "value": "This dataset reports the Grand List value of the ten highest valued properties by municipality, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed as missing values. 'Year Submitted' represents when the grand list data was collected for a given year. 'Town Profile Year' represents for which year these data were used in the Town Profiles project. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.",
+      "value": "This dataset reports the Grand List value of the ten highest valued properties by municipality, based on total taxes paid, as well as each of these properties as a percent of the given municipalities Total Grand List, Total Net Grand List, and Total Value of the Top 10. This data is reported directly from each municipality, and municipalities that did not provide data are displayed as missing values. 'Year Submitted' represents when the grand list data was collected for a given year. 'Town Profile Year' represents for which year these data were used in the Town Profiles project. Further information on the Totals used as denominators for percent values can be found on CTData in the Grand List Top 10 Totals dataset.",
       "type": "string"
     },
     "suppression": {
@@ -135,12 +135,12 @@
     },
     "years_in_catalog": {
       "ckan_name": "Years in Catalog",
-      "value": ["2014", "2016"],
+      "value": ["2014", "2016", "2017"],
       "type": "array"
     },
     "latest_year": {
       "ckan_name": "Latest Year Available",
-      "value": "2016",
+      "value": "2017",
       "type": "string"
     },
     "disabled_views": {
@@ -165,7 +165,7 @@
       "ckan_name": "Default",
       "value": {
         "Measure Type": "Number",
-        "Year": ["2016"],
+        "Year": ["2017"],
         "Variable": ["Grand List Value"]
       },
       "type": "object"
@@ -362,6 +362,57 @@
         "type": "$match",
         "number type": "int",
         "value": 1099140
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Manchester",
+        "Year": "2017",
+        "Rank": "1",
+        "Variable": "Grand List Value",
+        "Entry": "Shoppes at Buckland Hills, LLC",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 117200800
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Marlborough",
+        "Year": "2015",
+        "Rank": "2",
+        "Variable": "Grand List Value",
+        "Entry": "Elliott, Robert/Elliot Enterprises",	
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 3923920
+
+      }
+    },
+    {
+      "type": "$lookup",
+      "filter": {
+        "Town": "Fairfield",
+        "Year": "2014",
+        "Rank": "3",
+        "Variable": "Grand List Value",
+        "Entry": "Connecticut Light & Power",	 
+
+        "Measure Type": "Number"
+      },
+      "expected": {
+        "type": "$match",
+        "number type": "int",
+        "value": 59074290
+
       }
     }
   ],
